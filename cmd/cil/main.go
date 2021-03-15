@@ -10,14 +10,15 @@ import (
 var rootCmd = cobra.Command{
 	Use: "cil",
 	Run: func(cmd *cobra.Command, args []string) {
-		var address string
-		var image string
-		var namespace string
-		flagSet := cmd.Flags()
-		flagSet.StringVarP(&image, "image", "i", "", "path to the tar file")
-		flagSet.StringVarP(&address, "address", "a", "/run/k3s/containerd/containerd.sock", "address for containerd's GRPC server")
-		flagSet.StringVarP(&namespace, "namespace", "n", "k8s.io", "containerd namespace")
-		err := flagSet.Parse(args)
+		image, err := cmd.Flags().GetString("image")
+		if err != nil {
+			panic(err)
+		}
+		address, err := cmd.Flags().GetString("address")
+		if err != nil {
+			panic(err)
+		}
+		namespace, err := cmd.Flags().GetString("namespace")
 		if err != nil {
 			panic(err)
 		}
@@ -34,6 +35,13 @@ var rootCmd = cobra.Command{
 			panic(err)
 		}
 	},
+}
+
+func init() {
+	flagSet := rootCmd.Flags()
+	flagSet.StringP("image", "i", "", "path to the tar file")
+	flagSet.StringP("address", "a", "/run/k3s/containerd/containerd.sock", "address for containerd's GRPC server")
+	flagSet.StringP("namespace", "n", "k8s.io", "containerd namespace")
 }
 
 func main() {
