@@ -17,6 +17,10 @@ var rootCmd = cobra.Command{
 		flagSet.StringVarP(&image, "image", "i", "", "path to the tar file")
 		flagSet.StringVarP(&address, "address", "a", "/run/k3s/containerd/containerd.sock", "address for containerd's GRPC server")
 		flagSet.StringVarP(&namespace, "namespace", "n", "k8s.io", "containerd namespace")
+		err := flagSet.Parse(args)
+		if err != nil {
+			panic(err)
+		}
 		imageReader, err := os.Open(image)
 		if err != nil {
 			panic(err)
